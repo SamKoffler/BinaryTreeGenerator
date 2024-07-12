@@ -1,0 +1,92 @@
+class Node:
+    def __init__(self, right, left, val):
+        self.right = right
+        self.left = left
+        self.val = val
+
+def display_aux(node):
+    """Returns list of strings, width, height, and horizontal coordinate of the root."""
+    # No child
+    if node.right is None and node.left is None:
+        line = '%s' % node.val
+        width = len(line)
+        height = 1
+        middle = width // 2
+        return [line], width, height, middle
+
+    # Only left child
+    if node.right is None:
+        lines, n, p, x = display_aux(node.left)
+        s = '%s' % node.val
+        u = len(s)
+        first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s
+        second_line = x * ' ' + '/' + (n - x - 1 + u) * ' '
+        shifted_lines = [line + u * ' ' for line in lines]
+        return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
+
+    # Only right child
+    if node.left is None:
+        lines, n, p, x = display_aux(node.right)
+        s = '%s' % node.val
+        u = len(s)
+        first_line = s + x * '_' + (n - x) * ' '
+        second_line = (u + x) * ' ' + '\\' + (n - x - 1) * ' '
+        shifted_lines = [u * ' ' + line for line in lines]
+        return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
+
+    # Two children
+    left, n, p, x = display_aux(node.left)
+    right, m, q, y = display_aux(node.right)
+    s = '%s' % node.val
+    u = len(s)
+    first_line = (x + 1) * ' ' + (n - x - 1) * ' ' + s + y * ' ' + (m - y) * ' '
+    second_line = x * ' ' + '/' + (n - x - 1 + u + y) * ' ' + '\\' + (m - y - 1) * ' '
+    if p < q:
+        left += [n * ' '] * (q - p)
+    elif q < p:
+        right += [m * ' '] * (p - q)
+    zipped_lines = zip(left, right)
+    lines = [first_line, second_line] + [a + u * ' ' + b for a, b in zipped_lines]
+    return lines, n + m + u, max(p, q) + 2, n + u // 2
+
+def print_tree_2d(root):
+    lines, *_ = display_aux(root)
+    for line in lines:
+        print(line)
+
+#Iynputs handlin:
+nodes = []
+while True:
+    num = input("Enter an number to add to the binary tree or 'stop' to finish: ")
+    if num!="stop":
+        nodes.append(int(num))
+    else:
+        print("Here is your binary tree:")
+        break
+nodes.sort()
+temp = []
+length = len(nodes)
+while len(temp)<length:
+    idx = len(nodes)//2
+    temp.append(nodes[idx])
+    nodes.pop(idx)
+nodes = temp
+
+#Tree making and printing
+root = Node(None,None,nodes[0])
+
+queue = [root]
+i = 1
+
+while i < len(nodes):
+    curr = queue.pop(0)
+    if i < len(nodes):
+        curr.left = Node(None,None,nodes[i])
+        queue.append(curr.left)
+        i += 1
+    if i < len(nodes):
+        curr.right = Node(None,None,nodes[i])
+        queue.append(curr.right)
+        i += 1
+
+print_tree_2d(root)
