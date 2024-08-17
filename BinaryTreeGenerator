@@ -90,3 +90,6 @@ while i < len(nodes):
         i += 1
 
 print_tree_2d(root)
+
+print()
+print("To make new tree, run program again")
