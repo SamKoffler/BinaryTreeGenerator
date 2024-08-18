@@ -95,3 +95,4 @@ print()
 print("To make new tree, run program again")
 
 #Add more customization
+#Check the line spacing for printing numbers
